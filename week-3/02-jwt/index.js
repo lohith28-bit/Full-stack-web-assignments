@@ -1,5 +1,18 @@
 const jwt = require('jsonwebtoken');
 const jwtPassword = 'secret';
+const { z } = require('zod')
+const express = require('express')
+const app = express()
+app.use(express.json())
+const key = "Screate"
+
+
+
+const User = z.object({
+    username: z.string().email({ message: "Invalid email address" }),
+    password: z.string().min(6, { message: "Password must be minimum 6 or more character" })
+})
+
 
 
 /**
@@ -13,8 +26,12 @@ const jwtPassword = 'secret';
  *                        Returns null if the username is not a valid email or
  *                        the password does not meet the length requirement.
  */
-function signJwt(username, password) {
+
+function signJwt(username) {
     // Your code here
+    const token = jwt.sign({ username }, key)
+    console.log(token)
+    return token
 }
 
 /**
@@ -27,6 +44,10 @@ function signJwt(username, password) {
  */
 function verifyJwt(token) {
     // Your code here
+    const res = jwt.verify(token, key)
+    console.log(res)
+    if (!!res) return true
+    return false
 }
 
 /**
@@ -38,12 +59,35 @@ function verifyJwt(token) {
  */
 function decodeJwt(token) {
     // Your code here
+    if (!!jwt.decode(token)) return true
+    return false
 }
 
 
+app.post('/api/login', (req, res, next) => {
+    const { username, password } = req.body;
+    let token;
+    try {
+        User.parse({ username, password })
+        token = signJwt(username)
+    } catch (err) {
+        return next(err.issues[0])
+    }
+    console.log(decodeJwt(token))
+    verifyJwt(token)
+    return res.status(200).json({ msg: "Login Success", token })
+})
+
+app.use((err, req, res, next) => {
+    return res.status(404).json({ msg: err.message })
+})
+
+app.listen(3000, () => {
+    console.log("Server is running on PORT 3000")
+})
 module.exports = {
-  signJwt,
-  verifyJwt,
-  decodeJwt,
-  jwtPassword,
+    signJwt,
+    verifyJwt,
+    decodeJwt,
+    jwtPassword,
 };
