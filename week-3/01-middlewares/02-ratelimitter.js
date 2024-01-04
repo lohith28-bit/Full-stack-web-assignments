@@ -37,8 +37,8 @@ app.post('/user', function (req, res) {
   res.status(200).json({ msg: 'created dummy user' });
 });
 
-app.listen(3000, () => {
-  console.log("server is running in PORT 3000")
-})
+// app.listen(3000, () => {
+//   console.log("server is running in PORT 3000")
+// })
 
 module.exports = app;

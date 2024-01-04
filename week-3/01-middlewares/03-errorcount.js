@@ -24,8 +24,8 @@ app.get('/errorCount', function (req, res) {
 });
 
 app.use((err,req, res, next) => {
-  return res.status(404).send("OOPS something went wrong")
   errorCount = errorCount + 1
+  return res.status(404).send("OOPS something went wrong")
 })
 
 app.listen(3000, () => {
