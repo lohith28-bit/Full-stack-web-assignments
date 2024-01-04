@@ -13,15 +13,32 @@ const app = express();
 
 let numberOfRequestsForUser = {};
 setInterval(() => {
-    numberOfRequestsForUser = {};
+  numberOfRequestsForUser = {};
 }, 1000)
 
-app.get('/user', function(req, res) {
+app.use((req, res, next) => {
+  let userId = req.headers
+  if (numberOfRequestsForUser[userId]) {
+    if (numberOfRequestsForUser[userId] > 5) {
+      return res.status(404).json({ msg: 'You have been blocked to access this website' })
+    }
+    numberOfRequestsForUser[userId] = numberOfRequestsForUser[userId] + 1;
+  } else {
+    numberOfRequestsForUser[userId] = 1;
+  }
+  next()
+})
+
+app.get('/user', function (req, res) {
   res.status(200).json({ name: 'john' });
 });
 
-app.post('/user', function(req, res) {
+app.post('/user', function (req, res) {
   res.status(200).json({ msg: 'created dummy user' });
 });
+
+app.listen(3000, () => {
+  console.log("server is running in PORT 3000")
+})
 
 module.exports = app;
