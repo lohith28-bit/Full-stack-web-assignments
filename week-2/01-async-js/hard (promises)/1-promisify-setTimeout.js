@@ -3,6 +3,15 @@
 */
 
 function wait(n) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve("Done with THis ....")
+        }, n)
+    })
 }
 
-module.exports = wait;
+
+
+wait(1000).then((data) => {
+    console.log(data);
+})

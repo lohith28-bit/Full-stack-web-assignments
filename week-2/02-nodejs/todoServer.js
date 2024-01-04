@@ -39,11 +39,134 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
-  const express = require('express');
-  const bodyParser = require('body-parser');
-  
-  const app = express();
-  
-  app.use(bodyParser.json());
-  
-  module.exports = app;
+const express = require('express');
+const fs = require('fs')
+const { v4: uuidv4 } = require('uuid')
+
+
+const app = express();
+app.use(express.json());
+
+let todos = [];
+try {
+  const data = fs.readFileSync('todos.json', 'utf-8');
+  todos = JSON.parse(data);
+} catch (err) {
+  console.error('Error reading file:', err);
+}
+
+// Retrieve all todo items
+app.get('/todos', (req, res) => {
+  return res.status(200).json({ 'ToDo List': todos })
+})
+
+// Retrieve a specific todo item by ID
+app.get('/todos/:id', (req, res) => {
+  const id = req.params.id
+  const todo = todos.find((ele) => {
+    if (id === ele['_id']) return ele
+  })
+
+  if (!todo) return res.status(404).json({ msg: "Task not found" })
+
+  return res.status(200).json({
+    "task": todo
+  })
+})
+
+// Create a new todo item
+app.post('/todos', (req, res) => {
+  const { title, description } = req.body;
+  const newTodo = {
+    "_id": uuidv4(),
+    title,
+    "completed": false,
+    description
+  }
+
+  todos.push(newTodo)
+  const todosJSON = JSON.stringify(todos, null, 6);
+  fs.writeFileSync('todos.json', todosJSON)
+  return res.status(201).json({
+    msg: "Created new Task Successfully",
+    "new Task": newTodo
+  })
+})
+
+
+// Update an existing todo item by ID
+app.put('/todos/:id', (req, res) => {
+  const { title, description } = req.body;
+  const id = req.params.id
+  const findTask = todos.find(ele => ele._id === id)
+  if (!findTask) {
+    return res.status(404).json({
+      msg: "Task not Found"
+    })
+  }
+  if (title && description) {
+    todos = todos.map((ele) => {
+      if (id === ele._id) {
+        return {
+          ...ele,
+          title,
+          description
+        }
+      }
+      else return ele
+    })
+  } else if (title) {
+    todos = todos.map((ele) => {
+      if (id === ele._id) {
+        return {
+          ...ele,
+          title,
+        }
+      }
+      else return ele
+    })
+  } else if (description) {
+    todos = todos.map((ele) => {
+      if (id === ele._id) {
+        return {
+          ...ele,
+          description
+        }
+      }
+      return ele
+    })
+  }
+  const todosJSON = JSON.stringify(todos, null, 4);
+  fs.writeFileSync('todos.json', todosJSON)
+  const Task = todos.find(ele => {
+    if (id === ele['_id']) return ele
+  })
+  res.status(200).json({
+    msg: "Updated the task",
+    Task
+  })
+})
+
+// Delete a todo item by ID
+app.delete('/todos/:id', (req, res) => {
+  const id = req.params.id
+  const findTask = todos.find(ele => ele._id === id)
+  if (!findTask) {
+    return res.status(404).json({
+      msg: "Task Not Found"
+    })
+  }
+  todos = todos.filter(ele => ele._id !== id)
+  const todosJSON = JSON.stringify(todos, null, 4)
+  fs.writeFileSync('todos.json', todosJSON)
+  return res.status(200).json({
+    msg: 'Task Deleted Successfully'
+  })
+})
+
+app.listen(3000, () => {
+  console.log("Server is running in PORT 3000")
+})
+
+
+module.exports = app;
