@@ -1,1 +1,26 @@
-[]
+[
+      {
+            "_id": "261b03bc-959a-4a81-bbc3-74292a853b41",
+            "title": "Go for a Walk",
+            "completed": false,
+            "description": "Walk for 20 minutes"
+      },
+      {
+            "_id": "35fcb98c-2e94-443d-b675-92e0d93ee2dd",
+            "title": "Bring cake",
+            "completed": false,
+            "description": "Friend birthday"
+      },
+      {
+            "_id": "166cbc57-df77-4269-8329-7348c0120dcf",
+            "title": "Watch a movie",
+            "completed": false,
+            "description": "Its on Netflix"
+      },
+      {
+            "_id": "eb07997d-5ac8-498f-9cce-99389f0f08d7",
+            "title": "New Todo",
+            "completed": false,
+            "description": "A new todo item"
+      }
+]
