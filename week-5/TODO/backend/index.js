@@ -20,7 +20,7 @@ app.post('/todo', async (req, res) => {
 		}
 		const newTodo = await todo.create({
 			title: createPayload.title,
-			description: createPayload.title,
+			description: createPayload.description,
 			completed: false
 		});
 		res.status(201).json({
@@ -51,19 +51,18 @@ app.get("/todos", async (req, res) => {
 app.put('/completed', async (req, res) => {
 	try {
 		const updatePayload = req.body;
-		console.log(updatePayload);
 		const checkPayload = updateTodo.safeParse(updatePayload)
-		console.log(checkPayload.success);
 		if (!checkPayload) {
 			res.status(411).json({
 				msg: "Wrong input formate"
 			})
 			return;
 		}
+		const task = await todo.findById(updatePayload.id)
 		await todo.updateOne({
 			_id: updatePayload.id,
 		}, {
-			completed: true
+			completed: !task.completed
 		})
 		res.status(201).json({
 			msg: "Task completed successfully"
@@ -76,6 +75,17 @@ app.put('/completed', async (req, res) => {
 	}
 })
 
+app.delete('/delete', async (req, res) => {
+	const deletePayload = req.body;
+	const checkPayload = updateTodo.safeParse(deletePayload)
+	if (!checkPayload.success) {
+		res.json(411).json({
+			msg: "Wrong input formate"
+		})
+		return;
+	}
+	await todo.findByIdAndDelete(deletePayload.id)
+})
 
 app.listen(3000, () => {
 	console.log("Server is running in PORT 3000");
