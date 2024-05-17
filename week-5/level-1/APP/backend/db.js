@@ -9,7 +9,6 @@ const profileSchema = mongoose.Schema({
 	LinkedIn : String,
 	Twitter : String
 })
-
 const card_data = mongoose.model("card_data", profileSchema)
 
 module.exports = {card_data}
