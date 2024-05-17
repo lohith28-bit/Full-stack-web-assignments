@@ -21,9 +21,8 @@ function HomePage() {
                 Twitter: Twitter_Data.current.value
             })
         })
-            .then((data) => {
+            .then(() => {
                 console.log("Data Uploaded successfully")
-                console.log(data)
             })
     }
     return (

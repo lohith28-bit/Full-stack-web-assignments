@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import HomePage from './components/HomePage';
-import ShowData from './components/ShowData';
+import ShowCards from './components/ShowCards';
 import ErrorPage from './components/ErrorPage';
 
 const router = createBrowserRouter([
@@ -11,7 +11,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/showdata',
-    element: <ShowData />,
+    element: <ShowCards />,
     errorElement: ErrorPage
   },
 ]);

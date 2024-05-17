@@ -8,8 +8,5 @@ const checkType = zod.object({
 	Twitter: zod.string(),
 })
 
-const checkID = zod.object({
-	id : zod.string()
-})
 
-module.exports = {checkType, checkID}
+module.exports = { checkType }
